@@ -1,0 +1,32 @@
+Rocket Smoke @VERSION@
+for Kerbal Space Program 1.12.x
+
+A rocket's smoke as a true volume: it rolls out over the pad at lift-off, climbs after the
+rocket in a column, and hangs and drifts in the wind, lit by the sun and by the flame. It is
+the smoke of the Volumetric Explosions mod, fed by engines instead of by a blast.
+
+INSTALL
+  Copy the three folders in this download's GameData (Keystone, VolumetricExplosions and
+  RocketSmoke) into your KSP's GameData folder, and start the game. Keystone is the base this
+  mod stands on, and Volumetric Explosions makes and draws the smoke: one copy of each serves
+  every mod that uses it. To remove the mod, delete the RocketSmoke folder.
+
+USE
+  Nothing to do: every rocket engine leaves its smoke where there is air to hold it. Its
+  settings (how much, how long it hangs, and switching it off) are in the Keystone window:
+  the keystone button on the game's toolbar, or Option-K on a Mac and Alt-K elsewhere. Then
+  turn to Rocket Smoke.
+
+BESIDE OTHER MODS
+  While its smoke is drawn for an engine, the smoke the game draws for that engine is hidden,
+  and so is the flat haze of dust the game puts on the ground under it. Flames are left as
+  they are (the Engine Flames mod does for those what this does for smoke). Jets, ion engines
+  and engines that burn something it does not know keep the smoke they had.
+
+WHERE IT WORKS
+  Made and tried on a Mac. The smoke is drawn by Volumetric Explosions' shader, which is made
+  for the game's OpenGL (a Mac, Linux); nobody has run it on Linux yet. On Windows (Direct3D)
+  there is no such shader yet: the mod says so in its settings and leaves the game's smoke as
+  it is.
+
+Everything else: https://github.com/IshiakiZ/ksp-rocket-smoke
