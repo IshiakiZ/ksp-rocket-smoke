@@ -8,8 +8,9 @@ column, hangs and drifts in the wind, and is lit by the sun and by the flame.
 *The second and fourth pictures are with [Engine Flames](https://github.com/IshiakiZ/ksp-engine-flames) installed as well, which
 this smoke is made to go with; the other two have the game's own flames.*
 
-For Kerbal Space Program 1.12.x. Needs [Volumetric Explosions](https://github.com/IshiakiZ/ksp-volumetric-explosions) 0.4.0 or
-later, whose smoke this is, and [Keystone](https://github.com/IshiakiZ/ksp-keystone); both come in the download.
+For Kerbal Space Program 1.12.x. Needs [Volumetric Explosions](https://github.com/IshiakiZ/ksp-volumetric-explosions) 0.5.0 or
+later, whose smoke this is, and [Keystone](https://github.com/IshiakiZ/ksp-keystone); both come in the download. (With
+Volumetric Explosions 0.4 it still works, without the two things marked 0.2.0 below.)
 
 **It is made for the game's OpenGL (a Mac, Linux).** Volumetric Explosions draws its smoke with a shader
 made for that. On Windows (Direct3D) there is none yet: the mod says so in its settings and leaves the
@@ -17,11 +18,14 @@ game's smoke as it is.
 
 ## What it does
 
-* **Smoke that is somewhere.** Every engine leaves puffs of smoke where its flame ends. They are carried
-  on down the jet, stopped by the air, spread, rise, and are taken by the wind: the same simulated air,
-  and the same lit volume, as an explosion's smoke in Volumetric Explosions.
-* **It rolls out over the pad.** Where the jet lands the smoke is turned along the ground and rolls up
-  from it on every side. Off bare ground it takes the ground's dust with it; off water, spray.
+* **Smoke that comes out of the flame** (0.2.0). It is made in the jet itself, hot and unseen, and shows as
+  it cools, where the flame ends: the column is one with the flame and stays on it as the rocket climbs.
+  It is carried on down the jet, stopped by the air, spreads, rises, and is taken by the wind: the same
+  simulated air, and the same lit volume, as an explosion's smoke in Volumetric Explosions.
+* **Down the trench** (0.2.0). On a launch pad the jet goes down through the grate, and the smoke comes out
+  of the trench's two ends, low and fast, and rolls out over the ground on both sides; at night the ends
+  glow with the fire inside. Where the jet lands on open ground the smoke is turned along the ground and
+  rolls up from it on every side: off bare ground with the ground's dust in it, off water, spray.
 * **A trail that stays.** The column stands behind the rocket for as long as the smoke hangs, a
   kilometre and more of it, leaning with the wind.
 * **Lit as it lies.** The sun lights one side of it and its own thickness shades the other; at night it
@@ -60,7 +64,8 @@ In the Keystone window (the keystone button on the game's toolbar, or Option-K o
   haze of dust the game draws on the ground under it.
 * Flames are not its business: [Engine Flames](https://github.com/IshiakiZ/ksp-engine-flames) does for those what this does
   for smoke, and the two are made to be used together.
-* Floodlights do not light it. At night it is lit by the flame alone, and the foot of the column is dark.
+* At night it is lit by the flame and, since Volumetric Explosions 0.5.0, by the lamps round about (the
+  floodlights, the pad's own lights, buildings' lamps).
 * It cost next to nothing where it was measured: a Kerbal X (seven engines) left the pad at 39 frames a
   second without it and at 38 with it, and climbed at 45 and at 43; with Engine Flames as well, 39 and 46
   (one flight each way, on an Apple M5 Pro at 1280 by 720, with Scatterer, EVE, TUFX, Waterfall and

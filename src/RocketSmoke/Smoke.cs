@@ -4,7 +4,7 @@ using Keystone;
 using UnityEngine;
 
 #if !DEV
-[assembly: KSPAssembly("RocketSmoke", 0, 1)]
+[assembly: KSPAssembly("RocketSmoke", 0, 2)]
 [assembly: KSPAssemblyDependency("Keystone", 0, 5)]
 #endif
 
@@ -30,7 +30,7 @@ namespace RocketSmoke
     /// </summary>
     static class Smoke
     {
-        public const string Version = "0.1.0";
+        public const string Version = "0.2.0";
 
         public static Mod Page;
         public static Toggle On, Hide;
@@ -246,8 +246,11 @@ namespace RocketSmoke
                 rim /= e.Nozzles.Count; each /= e.Nozzles.Count;
                 along = along.sqrMagnitude > 1e-6f ? along.normalized : e.Nozzles[0].forward;
                 Smoke.Of(e.Fuel, out float amount, out float shade, out float warm, out float lasts, out int tint);
+                // (The ship it is on: with Volumetric Explosions 0.5 or later the smoke is worked out with the ship's flames while it
+                // is young, and turns out of the flame where the flame cools, and is handed on to the air behind once the ship has
+                // left it. An older one lays it straight into the air and takes no notice of the ship.)
                 bool taken = Feed.Burning((int)e.Part.flightID * 31 + e.Module.GetInstanceID() % 31, rim, along, v.srf_velocity, Mathf.Sqrt(area), Engines.Flame(e.Fuel, each) * (0.3f + 0.7f * Mathf.Sqrt(running)),
-                                          running, amount * much, shade, warm, lasts * hangs, tint);
+                                          running, amount * much, shade, warm, lasts * hangs, tint, v.transform);
                 if (taken)
                 {
                     burning++;
@@ -279,6 +282,42 @@ namespace RocketSmoke
         }
 
 #if DEV
+        /// <summary>(For the development build: the launch pads' own smoke effects, their colliders and their emitters, about the active vessel: east, north, up.)</summary>
+        public static string Pads()
+        {
+            Vessel v = FlightGlobals.ActiveVessel;
+            if (v == null) return "no vessel";
+            Vector3 o = v.transform.position, up = (Vector3)v.upAxis, north = Vector3.ProjectOnPlane((Vector3)v.mainBody.transform.up, up).normalized, east = Vector3.Cross(up, north);
+            string At(Vector3 p) { Vector3 d = p - o; return "(" + Vector3.Dot(d, east).ToString("F1") + ", " + Vector3.Dot(d, north).ToString("F1") + ", " + Vector3.Dot(d, up).ToString("F1") + ")"; }
+            string Dir(Vector3 d) => "(" + Vector3.Dot(d, east).ToString("F2") + ", " + Vector3.Dot(d, north).ToString("F2") + ", " + Vector3.Dot(d, up).ToString("F2") + ")";
+            var say = new System.Text.StringBuilder("east, north, up from " + v.vesselName + "'s root:");
+            var field = typeof(LaunchPadFX).GetField("ps", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
+            foreach (LaunchPadFX pad in FindObjectsOfType<LaunchPadFX>())
+            {
+                string path = pad.name;
+                for (Transform t = pad.transform.parent; t != null; t = t.parent) path = t.name + "/" + path;
+                say.Append("\nLaunchPadFX ").Append(path).Append(" at ").Append(At(pad.transform.position)).Append(" tag ").Append(pad.tag).Append(" layer ").Append(pad.gameObject.layer);
+                foreach (Collider c in pad.GetComponents<Collider>())
+                    say.Append("\n  collider ").Append(c.GetType().Name).Append(" centre ").Append(At(c.bounds.center)).Append(" size ").Append(c.bounds.size.ToString("F1")).Append(c.isTrigger ? " trigger" : "");
+                ParticleSystem[] ps = field != null ? field.GetValue(pad) as ParticleSystem[] : null;
+                if (ps == null) { say.Append("\n  no ps"); continue; }
+                foreach (ParticleSystem s in ps)
+                {
+                    if (s == null) continue;
+                    var shape = s.shape; var main = s.main;
+                    say.Append("\n  ps ").Append(s.name).Append(" at ").Append(At(s.transform.position)).Append(" forward ").Append(Dir(s.transform.forward)).Append(" up ").Append(Dir(s.transform.up))
+                       .Append(" shape ").Append(shape.shapeType).Append(" angle ").Append(shape.angle.ToString("F0")).Append(" radius ").Append(shape.radius.ToString("F1")).Append(" box ").Append(shape.scale.ToString("F1"))
+                       .Append(" rot ").Append(shape.rotation.ToString("F0")).Append(" pos ").Append(shape.position.ToString("F1")).Append(" speed ").Append(main.startSpeed.constantMax.ToString("F1"))
+                       .Append(" size ").Append(main.startSize.constantMax.ToString("F1")).Append(" life ").Append(main.startLifetime.constantMax.ToString("F1")).Append(" scale ").Append(s.transform.lossyScale.ToString("F2"));
+                }
+            }
+            // (and every collider tagged as the pad's, wherever it is)
+            foreach (Collider c in FindObjectsOfType<Collider>())
+                if (c != null && c.CompareTag("LaunchpadFX") && c.GetComponent<LaunchPadFX>() == null)
+                    say.Append("\ntagged collider ").Append(c.name).Append(" centre ").Append(At(c.bounds.center)).Append(" size ").Append(c.bounds.size.ToString("F1"));
+            return say.ToString();
+        }
+
         /// <summary>(For the development build: what is feeding smoke, in words.)</summary>
         public static string Stats()
         {
@@ -303,12 +342,12 @@ namespace RocketSmoke
         public static void Unhook(Action asked) { VolumetricExplosions.Sources.Asked -= asked; }
         public static bool Ready() => VolumetricExplosions.Sources.Ready;
 
-        public static bool Burning(int id, Vector3 rim, Vector3 along, Vector3d going, float nozzle, float flame, float running, float amount, float shade, float warm, float lasts, int tint)
+        public static bool Burning(int id, Vector3 rim, Vector3 along, Vector3d going, float nozzle, float flame, float running, float amount, float shade, float warm, float lasts, int tint, Transform ship)
         {
             var exhaust = new VolumetricExplosions.Exhaust
             {
                 id = id, rim = (Vector3d)rim, along = (Vector3d)along, going = going, nozzle = nozzle, flame = flame, running = running,
-                amount = amount, shade = shade, warm = warm, lasts = lasts, tint = tint,
+                amount = amount, shade = shade, warm = warm, lasts = lasts, tint = tint, rides = ship,
             };
             return VolumetricExplosions.Sources.Burning(exhaust);
         }

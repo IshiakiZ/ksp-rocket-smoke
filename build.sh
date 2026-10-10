@@ -44,10 +44,12 @@ case "$MODE" in
     WITH="$KEYSTONE" compile "$OUT/RocketSmoke.dll" "" src/RocketSmoke
     # (the mod's own shaders, if it has any: made by tools/shaderpack/make_bundle.py and kept ready made in src/RocketSmoke/Shaders)
     if ls src/RocketSmoke/Shaders/*.bundle >/dev/null 2>&1; then mkdir -p "$OUT/PluginData"; cp src/RocketSmoke/Shaders/*.bundle "$OUT/PluginData/"; fi
+    # (and anything else it keeps in src/RocketSmoke/PluginData: a craft file, say)
+    if [ -d src/RocketSmoke/PluginData ]; then mkdir -p "$OUT/PluginData"; cp -R src/RocketSmoke/PluginData/. "$OUT/PluginData/"; fi
     if [ "$MODE" = dist ]; then echo "ok: built into $OUT"; exit 0; fi
     mkdir -p "$KSP_DIR/GameData/RocketSmoke"
     cp "$OUT/RocketSmoke.dll" "$KSP_DIR/GameData/RocketSmoke/"
-    if [ -d "$OUT/PluginData" ]; then mkdir -p "$KSP_DIR/GameData/RocketSmoke/PluginData"; cp "$OUT/PluginData"/*.bundle "$KSP_DIR/GameData/RocketSmoke/PluginData/"; fi
+    if [ -d "$OUT/PluginData" ]; then mkdir -p "$KSP_DIR/GameData/RocketSmoke/PluginData"; cp -R "$OUT/PluginData/." "$KSP_DIR/GameData/RocketSmoke/PluginData/"; fi
     echo "ok: Rocket Smoke installed to $KSP_DIR/GameData/RocketSmoke (restart KSP to load it; it needs Keystone there too)"
     ;;
   *)

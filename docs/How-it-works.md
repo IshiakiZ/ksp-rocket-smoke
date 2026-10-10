@@ -30,15 +30,28 @@ Which fuel each of the game's engines is taken as burning is the same choice the
 [Engine Flames](https://github.com/IshiakiZ/ksp-engine-flames) mod makes, and the same config changes it
 for both.
 
-The smoke begins towards the end of the flame. It is thrown on down the jet at thirty-five to a hundred
-and ten metres a second, by the size of the nozzle; the air stops it within a few lengths of the flame,
-and by then it is three times as wide as it began. After that it is the air's: it spreads, rises a
-little, and goes with the wind. It thins sooner behind a fast rocket, which tears it apart, and sooner
-where the air is thin; in a vacuum there is none.
+Since 0.2.0 (with Volumetric Explosions 0.5.0) each engine also says what ship it is on, and the smoke is
+made in the jet itself, at the nozzle, in the patch of air that goes along with the ship and holds its
+flames: hot, so that it shows nothing while it is in the flame, and coming to show as it cools, over the
+flame's second half. So the column turns out of the flame where the flame dies and stays on it as the
+rocket climbs. It leaves the nozzle as fast as the flame's gas, slows more gently, widens by about a tenth
+of the way it goes, and is handed on to the air the rocket leaves behind once it is one and a half flame
+lengths back, coming on there as it fades in the ship's patch. After that it is the air's: it spreads,
+rises a little, and goes with the wind. It thins sooner behind a fast rocket, which tears it apart, and
+sooner where the air is thin; in a vacuum there is none. (Before, the smoke began towards the end of the
+flame in the trail's own patch, thrown on down the jet at thirty-five to a hundred and ten metres a second,
+and seen close to its top came on in lumps and did not join the flame.)
 
 ## The pad
 
-Where the jet would go into the ground the smoke begins on the ground instead, still being driven down:
+On a launch pad (0.2.0) the jet goes down through the grate in the pad's middle, and the smoke comes out at
+the flame trench's two ends, low in the sides of the pad: fast, along the ground and a little up the ramp
+each end is, rolling out and up on both sides, with the fire down in the trench lighting it. The trench
+takes a moment to fill when the engines light and to empty when they stop, and the deck round the rocket
+stays clear until the rocket is high enough for its jet to spread over the pad. (Volumetric Explosions
+finds every pad's grate and trench ends from the game's own pad smoke; see its page on engines' smoke.)
+
+Off the pad, where the jet would go into the ground the smoke begins on the ground instead, still being driven down:
 the air turns that along the ground on every side, and the smoke rolls up from it. It begins half as
 wide again there, rises faster, and off bare ground or water takes a share of dust or spray with it, in
 the ground's own colour. (On the launch pad, the runway and the space centre's paving there is none to
