@@ -3,7 +3,7 @@
 A rocket's smoke as a true volume: it rolls out over the pad at lift-off, climbs after the rocket in a
 column, hangs and drifts in the wind, and is lit by the sun and by the flame.
 
-![Smoke rolling out over the pad, the column behind a climbing rocket, the trail from afar, and a launch at night](src/RocketSmoke/img/rocket-smoke.jpg)
+![Smoke coming out of the two ends of the launch pad's trench at lift-off, the column behind a climbing rocket, the trail from afar, and a launch at night](src/RocketSmoke/img/rocket-smoke.jpg)
 
 *The second and fourth pictures are with [Engine Flames](https://github.com/IshiakiZ/ksp-engine-flames) installed as well, which
 this smoke is made to go with; the other two have the game's own flames.*
@@ -12,9 +12,9 @@ For Kerbal Space Program 1.12.x. Needs [Volumetric Explosions](https://github.co
 later, whose smoke this is, and [Keystone](https://github.com/IshiakiZ/ksp-keystone); both come in the download. (With
 Volumetric Explosions 0.4 it still works, without the two things marked 0.2.0 below.)
 
-**It is made for the game's OpenGL (a Mac, Linux).** Volumetric Explosions draws its smoke with a shader
-made for that. On Windows (Direct3D) there is none yet: the mod says so in its settings and leaves the
-game's smoke as it is.
+**It works wherever Volumetric Explosions draws a volume**: on the game's OpenGL (a Mac, Linux), and on
+Windows (Direct3D) with that mod's shaders built for Direct3D. Where it cannot, the mod says so in its
+settings and leaves the game's smoke as it is.
 
 ## What it does
 
@@ -72,7 +72,14 @@ In the Keystone window (the keystone button on the game's toolbar, or Option-K o
   Natural Light). A solid booster's smoke is several times a liquid engine's, and was not measured.
 * Made on 2026-10-09 and looked at in pictures and frame by frame: lift-off and climb by day and by
   night, with solid boosters and with liquid engines. Nobody has played with it yet.
-* Made and tried on a Mac. Linux uses the same OpenGL shader and should work, but it has **not been run**
-  there. On Windows it does nothing yet (see above).
+* Made and tried on a Mac; tried on Windows too (see below).
+
+## Where it works
+
+| System | |
+| --- | --- |
+| Mac | Made and tried here (KSP 1.12.5, OpenGL). |
+| Windows | Tried on Windows 11 (KSP 1.12.5, Direct3D 11), with Volumetric Explosions' shaders built for Direct3D: Kerbal X's lift-off and climb, its trail drawn as the explosions' smoke, and the page saying "No engine is running where there is air to hold smoke" once it had left the air. Then at night: the steam and smoke round the pad lit warm by the engines (Natural Light) and by the floodlights, 72 frames a second at lift-off; and solid boosters at night (Kerbal 1-5's two Hammers): their smoke thrown out across the pad at ignition, lit by the floodlights and the flames, then a thick trail glowing near the nozzles. |
+| Linux | **Never run.** It uses the same OpenGL shader as the Mac. |
 
 More: [how it works](docs/How-it-works.md).

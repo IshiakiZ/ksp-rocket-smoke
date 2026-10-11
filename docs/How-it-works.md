@@ -90,7 +90,8 @@ let thin away over a couple of seconds.
 The sun's light is followed through the smoke, so one side of the column is lit and the other is in its
 own shade, and thin smoke in front of the sun shines. The sky lights it from above. And each engine is a
 light of its own on its smoke: at night the head of the trail is lit by the flame it comes from, in that
-flame's colour, and the rest of it is dark. Floodlights and other lamps in the scene do not light it.
+flame's colour. Since Volumetric Explosions 0.5.0 the lamps round about (the floodlights, the pad's own
+lights, buildings' lamps) light it too; where none reach, it is dark.
 
 ## What it costs
 
@@ -113,8 +114,9 @@ smoke, where every pixel is a walk through it; a slower computer.
 
 ## What it does not do
 
-* Windows. The volume is drawn by a shader made for the game's OpenGL (a Mac, Linux). On Direct3D the mod
-  says so and leaves the game's smoke as it is.
+* Smoke where Volumetric Explosions cannot draw a volume: there the mod says so and leaves the game's smoke
+  as it is. (On Windows that mod's shaders are built for Direct3D, and the smoke was seen there on 2026-10-10, by
+  day and by night, of liquid engines and of solid boosters.)
 * Smoke in a vacuum, or from jets, ion engines and engines that burn something it does not know.
-* Light from floodlights, and shadows of the ship or of buildings on the smoke.
+* Shadows of the ship or of buildings on the smoke.
 * Nobody has tried it at a landing, on a plane, or with several rockets in the air at once.

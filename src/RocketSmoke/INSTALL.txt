@@ -24,9 +24,9 @@ BESIDE OTHER MODS
   and engines that burn something it does not know keep the smoke they had.
 
 WHERE IT WORKS
-  Made and tried on a Mac. The smoke is drawn by Volumetric Explosions' shader, which is made
-  for the game's OpenGL (a Mac, Linux); nobody has run it on Linux yet. On Windows (Direct3D)
-  there is no such shader yet: the mod says so in its settings and leaves the game's smoke as
-  it is.
+  Made and tried on a Mac, and tried on Windows 11. The smoke is drawn by Volumetric
+  Explosions' shaders, packed for the game's OpenGL (a Mac, Linux) and built for Direct3D
+  (Windows); nobody has run it on Linux yet. Where that mod cannot draw a volume, this one
+  says so in its settings and leaves the game's smoke as it is.
 
 Everything else: https://github.com/IshiakiZ/ksp-rocket-smoke
