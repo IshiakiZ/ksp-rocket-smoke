@@ -41,7 +41,7 @@ both are the game's and the Waterfall mod's.*
 
 ## Install
 
-Copy the `Keystone`, `VolumetricExplosions` and `RocketSmoke` folders from the download's `GameData` into
+Copy the `Keystone`, `VolumetricExplosions` and `RocketSmoke` folders from the download into
 your KSP `GameData`.
 
 ## Settings
@@ -79,7 +79,11 @@ In the Keystone window (the keystone button on the game's toolbar, or Option-K o
 | System | |
 | --- | --- |
 | Mac | Made and tried here (KSP 1.12.5, OpenGL). |
-| Windows | Tried on Windows 11 (KSP 1.12.5, Direct3D 11), with Volumetric Explosions' shaders built for Direct3D: Kerbal X's lift-off and climb, its trail drawn as the explosions' smoke, and the page saying "No engine is running where there is air to hold smoke" once it had left the air. Then at night: the steam and smoke round the pad lit warm by the engines (Natural Light) and by the floodlights, 72 frames a second at lift-off; and solid boosters at night (Kerbal 1-5's two Hammers): their smoke thrown out across the pad at ignition, lit by the floodlights and the flames, then a thick trail glowing near the nozzles. |
+| Windows | Tried on Windows 11 (KSP 1.12.5, Direct3D 11), with Volumetric Explosions' shaders built for Direct3D: Kerbal X's lift-off and climb, its trail drawn as the explosions' smoke, and the page saying "No engine is running where there is air to hold smoke" once it had left the air. Then at night: the steam and smoke round the pad lit warm by the engines (Natural Light) and by the floodlights, 72 frames a second at lift-off; and solid boosters at night (Kerbal 1-5's two Hammers): their smoke thrown out across the pad at ignition, lit by the floodlights and the flames, then a thick trail glowing near the nozzles. Again on 2026-10-11, by day, with Volumetric Explosions 0.6.3's reworked smoke (its shaders built for Direct3D again that day): Kerbal X filmed from 75 m: smoke out of both ends of the pad's trench from ignition on, rolling out over the ground, a dark column standing behind the rocket and thinning over a quarter of a minute, its shadow on the grass; Kerbal 1-5's two solid boosters: pale smoke pouring out of the trench's ends and rolling out wide on both sides, a dark column above. Both as on OpenGL on the same computer, and the first again with TUFX taken out. With Natural Weather's clouds in the sky the far clouds were at first drawn over the smoke (Direct3D draws the whole scene with one camera): mended in Natural Weather that day, and then seen right. |
 | Linux | **Never run.** It uses the same OpenGL shader as the Mac. |
 
 More: [how it works](docs/How-it-works.md).
+
+## Licence
+
+[CC BY 4.0](LICENSE): use it, change it and pass it on as you like, as long as you credit Ishiaki and link back here.

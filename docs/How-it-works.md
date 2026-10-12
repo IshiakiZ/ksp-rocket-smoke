@@ -34,9 +34,11 @@ Since 0.2.0 (with Volumetric Explosions 0.5.0) each engine also says what ship i
 made in the jet itself, at the nozzle, in the patch of air that goes along with the ship and holds its
 flames: hot, so that it shows nothing while it is in the flame, and coming to show as it cools, over the
 flame's second half. So the column turns out of the flame where the flame dies and stays on it as the
-rocket climbs. It leaves the nozzle as fast as the flame's gas, slows more gently, widens by about a tenth
-of the way it goes, and is handed on to the air the rocket leaves behind once it is one and a half flame
-lengths back, coming on there as it fades in the ship's patch. After that it is the air's: it spreads,
+rocket climbs. Since Volumetric Explosions 0.6.1 it is the air's from the first: it goes back past the
+rocket at the rocket's own speed, widening by how far it has gone, and about one and a half flame lengths
+back it gives way to the trail laid in the air the rocket leaves behind, the one going as the other comes
+(see that mod's page on engines' smoke for how, and for what was wrong before: a row of balls behind a
+fast rocket, and a dome on the flame high up). After that it spreads,
 rises a little, and goes with the wind. It thins sooner behind a fast rocket, which tears it apart, and
 sooner where the air is thin; in a vacuum there is none. (Before, the smoke began towards the end of the
 flame in the trail's own patch, thrown on down the jet at thirty-five to a hundred and ten metres a second,
@@ -116,7 +118,8 @@ smoke, where every pixel is a walk through it; a slower computer.
 
 * Smoke where Volumetric Explosions cannot draw a volume: there the mod says so and leaves the game's smoke
   as it is. (On Windows that mod's shaders are built for Direct3D, and the smoke was seen there on 2026-10-10, by
-  day and by night, of liquid engines and of solid boosters.)
+  day and by night, of liquid engines and of solid boosters; and on 2026-10-11, by day, the smoke as reworked in
+  Volumetric Explosions 0.6: out of the trench's two ends, the column, its shadow.)
 * Smoke in a vacuum, or from jets, ion engines and engines that burn something it does not know.
 * Shadows of the ship or of buildings on the smoke.
 * Nobody has tried it at a landing, on a plane, or with several rockets in the air at once.
