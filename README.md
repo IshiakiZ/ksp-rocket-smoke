@@ -9,7 +9,8 @@ column, hangs and drifts in the wind, and is lit by the sun and by the flame.
 this smoke is made to go with; the other two have the game's own flames.*
 
 For Kerbal Space Program 1.12.x. Needs [Volumetric Explosions](https://github.com/IshiakiZ/ksp-volumetric-explosions) 0.5.0 or
-later, whose smoke this is, and [Keystone](https://github.com/IshiakiZ/ksp-keystone); both come in the download. (With
+later, whose smoke this is, and [Keystone](https://github.com/IshiakiZ/ksp-keystone). Each is a separate download, and this mod does not load without both:
+[Volumetric Explosions](https://spacedock.info/mod/4669/Volumetric%20Explosions) and [Keystone](https://spacedock.info/mod/4665/Keystone) on SpaceDock. (With
 Volumetric Explosions 0.4 it still works, without the two things marked 0.2.0 below.)
 
 **It works wherever Volumetric Explosions draws a volume**: on the game's OpenGL (a Mac, Linux), and on
@@ -41,8 +42,9 @@ both are the game's and the Waterfall mod's.*
 
 ## Install
 
-Copy the `Keystone`, `VolumetricExplosions` and `RocketSmoke` folders from the download into
-your KSP `GameData`.
+Install [Keystone](https://github.com/IshiakiZ/ksp-keystone) and [Volumetric Explosions](https://github.com/IshiakiZ/ksp-volumetric-explosions) first: each is a download
+of its own, and its folder goes into your KSP `GameData`. Then copy the `RocketSmoke` folder from this mod's download
+into `GameData` beside them.
 
 ## Settings
 

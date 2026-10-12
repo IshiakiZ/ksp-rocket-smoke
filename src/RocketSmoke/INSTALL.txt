@@ -6,10 +6,13 @@ rocket in a column, and hangs and drifts in the wind, lit by the sun and by the 
 the smoke of the Volumetric Explosions mod, fed by engines instead of by a blast.
 
 INSTALL
-  Copy the three folders in this download (Keystone, VolumetricExplosions and
-  RocketSmoke) into your KSP's GameData folder, and start the game. Keystone is the base this
-  mod stands on, and Volumetric Explosions makes and draws the smoke: one copy of each serves
-  every mod that uses it. To remove the mod, delete the RocketSmoke folder.
+  This mod needs two others, each a separate download:
+    Keystone, the base it stands on:  https://spacedock.info/mod/4665/Keystone
+    Volumetric Explosions, which makes and draws the smoke:  https://spacedock.info/mod/4669/Volumetric%20Explosions
+  Copy their folders (Keystone and VolumetricExplosions) into your KSP's GameData folder,
+  and the RocketSmoke folder from this download beside them, and start the game. Without both
+  the game does not load this mod. One copy of each serves every mod that uses it. To remove
+  this mod, delete the RocketSmoke folder.
 
 USE
   Nothing to do: every rocket engine leaves its smoke where there is air to hold it. Its
