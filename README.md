@@ -5,6 +5,8 @@ column, hangs and drifts in the wind, and is lit by the sun and by the flame.
 
 ![Smoke coming out of the two ends of the launch pad's trench at lift-off, the column behind a climbing rocket, the trail from afar, and a launch at night](src/RocketSmoke/img/rocket-smoke.jpg)
 
+![Lift-off: smoke rolling out of both ends of the pad's trench, the column climbing after the rocket](src/RocketSmoke/img/rocket-smoke-liftoff.gif)
+
 For Kerbal Space Program 1.12.x. **Needs two other mods**, each a separate download, and does not load without both:
 [Keystone](https://github.com/IshiakiZ/ksp-keystone) ([on SpaceDock](https://spacedock.info/mod/4665/Keystone)) and
 [Volumetric Explosions](https://github.com/IshiakiZ/ksp-volumetric-explosions) 0.5.0 or later

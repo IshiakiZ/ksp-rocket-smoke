@@ -34,14 +34,25 @@ if [ -f src/RocketSmoke/needs.txt ]; then
   done < src/RocketSmoke/needs.txt
 fi
 
+# A companion library for the Harmony mod, where this mod has one (src/RocketSmokeHarmony): built against this mod and against
+# Harmony, only where Harmony is installed in the game, and loaded by the game only where it is.
+HARMONY="$KSP_DIR/GameData/000_Harmony/0Harmony.dll"
+companion() {  # companion <folder the mod's own library is in>
+  [ -d src/RocketSmokeHarmony ] || return 0
+  if [ -f "$HARMONY" ]; then WITH="$KEYSTONE:$1/RocketSmoke.dll:$HARMONY" compile "$1/RocketSmokeHarmony.dll" "" src/RocketSmokeHarmony
+  else rm -f "$1/RocketSmokeHarmony.dll"; echo "left out: RocketSmokeHarmony (Harmony is not installed here to build it against)"; fi
+}
+
 case "$MODE" in
   check)
     WITH="$KEYSTONE" compile "$TMP/RocketSmoke.dll" "" src/RocketSmoke
+    companion "$TMP"
     echo "ok: compiles"
     ;;
   dist|install)
     mkdir -p "$OUT"
     WITH="$KEYSTONE" compile "$OUT/RocketSmoke.dll" "" src/RocketSmoke
+    companion "$OUT"
     # (the mod's own shaders, if it has any: made by tools/shaderpack/make_bundle.py and kept ready made in src/RocketSmoke/Shaders)
     if ls src/RocketSmoke/Shaders/*.bundle >/dev/null 2>&1; then mkdir -p "$OUT/PluginData"; cp src/RocketSmoke/Shaders/*.bundle "$OUT/PluginData/"; fi
     # (and anything else it keeps in src/RocketSmoke/PluginData: a craft file, say)
@@ -49,6 +60,8 @@ case "$MODE" in
     if [ "$MODE" = dist ]; then echo "ok: built into $OUT"; exit 0; fi
     mkdir -p "$KSP_DIR/GameData/RocketSmoke"
     cp "$OUT/RocketSmoke.dll" "$KSP_DIR/GameData/RocketSmoke/"
+    rm -f "$KSP_DIR/GameData/RocketSmoke/RocketSmokeHarmony.dll"
+    [ -f "$OUT/RocketSmokeHarmony.dll" ] && cp "$OUT/RocketSmokeHarmony.dll" "$KSP_DIR/GameData/RocketSmoke/"
     if [ -d "$OUT/PluginData" ]; then mkdir -p "$KSP_DIR/GameData/RocketSmoke/PluginData"; cp -R "$OUT/PluginData/." "$KSP_DIR/GameData/RocketSmoke/PluginData/"; fi
     echo "ok: Rocket Smoke installed to $KSP_DIR/GameData/RocketSmoke (restart KSP to load it; it needs Keystone there too)"
     ;;
