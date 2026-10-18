@@ -34,8 +34,11 @@ it hangs, and whether the game's own smoke is hidden.
 
 * Rocket engines only, and only where there is air to hold smoke.
 * Made to go with [Engine Flames](https://github.com/IshiakiZ/ksp-engine-flames), whose flame lights it.
-* It cost next to nothing where it was measured: a seven-engine rocket left the pad at 39 frames a second without it
-  and at 38 with it.
+* What it costs grows with the resolution and with how much of the screen the smoke fills: every pixel it covers is
+  traced through the cloud. At 1280 by 720 with the camera some way off, a seven-engine rocket left the pad at 39 frames
+  a second without it and at 38 with it; at 1440p, or with the camera inside the cloud, it costs far more
+  ([a player's measurements](https://github.com/IshiakiZ/ksp-rocket-smoke/issues/1)). Making it cheaper there is being
+  worked on.
 
 ## Works on
 
