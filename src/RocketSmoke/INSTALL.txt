@@ -7,8 +7,8 @@ the smoke of the Volumetric Explosions mod, fed by engines instead of by a blast
 
 INSTALL
   This mod needs two others, each a separate download:
-    Keystone, the base it stands on:  https://spacedock.info/mod/4665/Keystone
-    Volumetric Explosions, which makes and draws the smoke:  https://spacedock.info/mod/4669/Volumetric%20Explosions
+    Keystone 0.9 or later, the base it stands on:  https://spacedock.info/mod/4665/Keystone
+    Volumetric Explosions 0.8 or later, which makes and draws the smoke:  https://spacedock.info/mod/4669/Volumetric%20Explosions
   Copy their folders (Keystone and VolumetricExplosions) into your KSP's GameData folder,
   and the RocketSmoke folder from this download beside them, and start the game. Without both
   the game does not load this mod. One copy of each serves every mod that uses it. To remove

@@ -8,8 +8,8 @@ column, hangs and drifts in the wind, and is lit by the sun and by the flame.
 ![Lift-off: smoke rolling out of both ends of the pad's trench, the column climbing after the rocket](src/RocketSmoke/img/rocket-smoke-liftoff.gif)
 
 For Kerbal Space Program 1.12.x. **Needs two other mods**, each a separate download, and does not load without both:
-[Keystone](https://github.com/IshiakiZ/ksp-keystone) ([on SpaceDock](https://spacedock.info/mod/4665/Keystone)) and
-[Volumetric Explosions](https://github.com/IshiakiZ/ksp-volumetric-explosions) 0.5.0 or later
+[Keystone](https://github.com/IshiakiZ/ksp-keystone) 0.9 or later ([on SpaceDock](https://spacedock.info/mod/4665/Keystone)) and
+[Volumetric Explosions](https://github.com/IshiakiZ/ksp-volumetric-explosions) 0.8 or later
 ([on SpaceDock](https://spacedock.info/mod/4669/Volumetric%20Explosions)), whose smoke this is.
 
 ## What it does
@@ -19,6 +19,8 @@ For Kerbal Space Program 1.12.x. **Needs two other mods**, each a separate downl
 * **A trail that stays:** the column stands behind the rocket, a kilometre and more of it, leaning with the wind.
 * **What burns shows:** a solid booster's smoke is thick and white, kerosene's thin and grey-brown, and hydrogen
   leaves a little steam.
+* **The pad's water and the air's** (0.3.0): at lift-off the deluge under the rocket boils into white billows; in damp air
+  the exhaust's own water stays as cloud; at dusk the trail high up stays sunlit after the ground has gone dark.
 
 ## Install
 
@@ -44,8 +46,8 @@ it hangs, and whether the game's own smoke is hidden.
 
 Windows 11 (Direct3D 11 and OpenGL) and Mac: tried. Linux: never run.
 
-**More:** [the long description](docs/The-long-description.md) (everything in full, and what
-was tried on each system) and the rest of the [wiki](docs/README.md).
+**More:** [the long description](https://github.com/IshiakiZ/ksp-rocket-smoke/wiki/The-long-description) (everything in full, and what
+was tried on each system) and the rest of the [wiki](https://github.com/IshiakiZ/ksp-rocket-smoke/wiki).
 
 ## Licence
 
