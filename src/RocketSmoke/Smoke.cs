@@ -5,7 +5,7 @@ using UnityEngine;
 
 #if !DEV
 [assembly: KSPAssembly("RocketSmoke", 0, 2)]
-[assembly: KSPAssemblyDependency("Keystone", 0, 5)]
+[assembly: KSPAssemblyDependency("Keystone", 0, 11)]
 #endif
 
 namespace RocketSmoke
@@ -30,11 +30,22 @@ namespace RocketSmoke
     /// </summary>
     static class Smoke
     {
-        public const string Version = "0.3.0";
+        public const string Version = "0.4.0";
 
         public static Mod Page;
         public static Toggle On, Hide, Trails, Deluge;
         public static Slider Much, Hangs;
+        // (the fine details, on the page in Keystone's Advanced view; each as installed does what the mod did before them)
+        public static Slider SolidMuch, LiquidMuch, DampMuch, SteamMuch, TrailMuch;
+
+        /// <summary>A fine detail's figure: 1, as installed, before the page is made.</summary>
+        public static float Times(Slider slider) => slider != null ? (float)slider : 1f;
+
+        /// <summary>The settings added after Fine(true) are fine details: on the page only in Keystone's Advanced view, until Fine(false).
+        /// (Keystone 0.11.0 has the two views; an older one has neither call, and shows the fine details with the rest.)</summary>
+        static void Fine(bool fine) { try { if (fine) Advanced(Page); else Simple(Page); } catch (Exception) { } }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] static void Advanced(Mod page) => page.Advanced();
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] static void Simple(Mod page) => page.Simple();
 
         static void Faster() => Page.Faster(Hangs, "0.6");
 
@@ -44,11 +55,22 @@ namespace RocketSmoke
             Page = Kit.Register("Rocket Smoke", Version, "The smoke of a rocket's engines as real smoke: it rolls out over the pad, takes the light, leans with the wind, and hangs where the rocket has been.");
             On = Page.Toggle("on", "Rocket smoke", true, "Off: the smoke the game draws.");
             Much = Page.Slider("much", "How much", 1f, 0.3f, 2.5f, "", 2, "How much smoke the engines make.");
+            Fine(true);
+            SolidMuch = Page.Slider("solid", "From solid boosters", 1f, 0f, 3f, "x", 2, "How much smoke a solid booster makes, against as installed (thick, white, and it stays): 0, none.");
+            LiquidMuch = Page.Slider("liquid", "From liquid engines", 1f, 0f, 3f, "x", 2, "How much smoke every other rocket engine makes, against as installed (kerosene's thin grey-brown, hydrogen's little white steam, the brown haze of fuels that keep): 0, none.");
+            DampMuch = Page.Slider("damp", "Cloud in damp air", 1f, 0f, 3f, "x", 2, "How much more of a white cloud the exhaust is where the air is nearly saturated (the weather mod's, through Volumetric Explosions), for the water in it: 0, none.");
+            Fine(false);
             Hangs = Page.Slider("hangs", "How long it hangs", 1f, 0.3f, 3f, "", 2, "How long the smoke stays in the air. Longer costs more: there is more of it at once.");
             try { Faster(); } catch (Exception) { }             // (what "every mod set for speed" sets here; not with a Keystone older than 0.9.0)
             Hide = Page.Toggle("hide", "Hide the game's own smoke", true, "While an engine's smoke is drawn by this mod, the smoke the game draws for it is hidden.");
             Trails = Page.Toggle("trails", "Jets' trails", true, "High up, where the air is cold enough, a jet leaves a white trail of ice behind it, which lingers where the air is damp (with the Natural Weather mod, as the weather says).");
+            Fine(true);
+            TrailMuch = Page.Slider("trail", "How thick jets' trails are", 1f, 0f, 3f, "x", 2, "How thick a jet's white trail of ice is, against as installed: 0, none.");
+            Fine(false);
             Deluge = Page.Toggle("deluge", "The pad's water deluge", true, "As at real launch pads, water is poured under a rocket lifting off, and its flame boils it away: the white billows round a launch are mostly that steam.");
+            Fine(true);
+            SteamMuch = Page.Slider("steam", "How much steam off the pad's water", 1f, 0f, 3f, "x", 2, "How much steam the deluge's water boils into under a rocket lifting off, against as installed: 0, none (the water is left out).");
+            Fine(false);
         }
 
         public static void Log(string text) => Kit.Log("Rocket Smoke", text);
@@ -97,6 +119,11 @@ namespace RocketSmoke
             public readonly List<Renderer> Hidden = new List<Renderer>();
             public readonly List<ModuleSurfaceFX> Dust = new List<ModuleSurfaceFX>();      // the game's own dust and spray where its jet meets the ground,
             public readonly List<float> DustWas = new List<float>();                       // and how strong each was set to be
+#if DEV
+            public string ShownWhy = "";       // (for the readout: why the game's smoke was last given back, when, and how often)
+            public float ShownAt = -1f;
+            public int ShownCount;
+#endif
         }
 
         readonly List<Engine> engines = new List<Engine>();
@@ -136,7 +163,7 @@ namespace RocketSmoke
         void OnDestroy()
         {
             if (hooked) { try { Feed.Unhook(Asked); } catch (Exception) { } }
-            foreach (Engine e in engines) Show(e);
+            foreach (Engine e in engines) Show(e, "this mod stopped");
             engines.Clear();
             if (Smoke.Page != null && Smoke.Page.Panel == Panel) Smoke.Page.Panel = null;
         }
@@ -146,9 +173,27 @@ namespace RocketSmoke
             GUILayout.Label(Why.Length > 0 ? Why : Report, Host.Small);
         }
 
-        static void Show(Engine e)
+        static void Show(Engine e, string why)
         {
-            foreach (Renderer r in e.Hidden) if (r != null) r.forceRenderingOff = false;
+#if DEV
+            e.ShownWhy = why; e.ShownAt = Time.time; e.ShownCount++;
+#endif
+            // (Hidden, the game's smoke went on being made, and moving, all the while: hiding draws nothing but stops nothing.
+            // What is alive of it is the last seconds of a trail that ours was drawn in place of, and shown as it is, the whole of
+            // it would appear at once where ours is: the owner's report of 2026-11-07, a big rocket broken up on the ground and the
+            // game's smoke where its boosters' had been as each stopped (125 puffs at once from one), and as much round any engine
+            // shut in the air (some 250 from each of the Kerbal X's six). It is let go: what the game makes from now on is drawn,
+            // and where the engine has stopped, nothing.)
+            foreach (Renderer r in e.Hidden)
+            {
+                if (r == null) continue;
+                ParticleSystem system = r.GetComponent<ParticleSystem>();
+#if DEV
+                if (keepTheirs) system = null;
+#endif
+                if (system != null) system.Clear(false);
+                r.forceRenderingOff = false;
+            }
             e.Hidden.Clear();
             for (int n = 0; n < e.Dust.Count; n++) if (e.Dust[n] != null) e.Dust[n].fxMax = e.DustWas[n];
             e.Dust.Clear(); e.DustWas.Clear();
@@ -204,7 +249,7 @@ namespace RocketSmoke
             engines.RemoveAll(e =>
             {
                 if (e.Module != null && e.Part != null && e.Part.vessel != null && e.Part.vessel.loaded) return false;
-                Show(e);
+                Show(e, "gone");
                 if (e.Module != null) known.Remove(e.Module);
                 return true;
             });
@@ -294,7 +339,7 @@ namespace RocketSmoke
             float now = Time.time;
             if (!wanted)
             {
-                foreach (Engine e in engines) if (e.Hid) Show(e);
+                foreach (Engine e in engines) if (e.Hid) Show(e, "not wanted");
                 smoking = 0;
                 Report = Smoke.On ? "Volumetric Explosions cannot draw smoke as a volume here: the game's own smoke is left." : "";
                 return;
@@ -317,7 +362,7 @@ namespace RocketSmoke
                 if (running <= 0.02f || v == null || v.packed)
                 {
                     // (its smoke is given back a moment after it stops: the last of ours is still coming out of the flame)
-                    if (e.Hid && now - e.Seen > 0.5f) Show(e);
+                    if (e.Hid && now - e.Seen > 0.5f) Show(e, running <= 0.02f ? "stopped" : v == null ? "no ship" : "packed");
                     continue;
                 }
                 if (!e.Measured) Measure(e);
@@ -345,20 +390,22 @@ namespace RocketSmoke
                     {
                         // (narrow and thin where it begins, as each engine's own line is: it spreads with the minutes, not the metres)
                         bool laid = Feed.Burning((int)e.Part.flightID * 31 + e.Module.GetInstanceID() % 31 + 7, rim, along, v.srf_velocity, 0.5f * Mathf.Sqrt(area), Mathf.Max(30f, 40f * each),
-                                                 running, 0.13f * thick * running * much, 0.97f, 0f, stays * hangs, 4, v.transform);
+                                                 running, 0.13f * thick * running * much * Smoke.Times(Smoke.TrailMuch), 0.97f, 0f, stays * hangs, 4, v.transform);
                         if (laid) trailing++;
                     }
                     continue;
                 }
                 Smoke.Of(e.Fuel, out float amount, out float shade, out float warm, out float lasts, out int tint);
+                amount *= Smoke.Times(e.Fuel == Fuel.Solid ? Smoke.SolidMuch : Smoke.LiquidMuch);
                 // (and high up, in air cold enough, the water in it freezes: the trail turns white ice, thicker to see and slower to go)
                 float ice = Frozen(v, rim, e.Fuel);
                 if (ice > 0f) { amount *= 1f + 2.5f * ice; shade = Mathf.Lerp(shade, 0.96f, ice); warm *= 1f - ice; lasts *= 1f + ice; }
-                // (and in damp air the water in the exhaust stays as cloud: see Wetted)
-                float wet = Wetted(rim, e.Fuel) * (1f - ice);
-                if (wet > 0.01f) { amount *= 1f + 1.6f * wet; shade = Mathf.Lerp(shade, 0.93f, wet); warm *= 1f - 0.6f * wet; lasts *= 1f + 1.2f * wet; }
+                // (and in damp air the water in the exhaust stays as cloud: see Wetted. More of it than the air gives, as the page may
+                // ask, is more cloud, as white as the most the air gives)
+                float wet = Wetted(rim, e.Fuel) * (1f - ice) * Smoke.Times(Smoke.DampMuch), most = Mathf.Min(wet, 1f);
+                if (wet > 0.01f) { amount *= 1f + 1.6f * wet; shade = Mathf.Lerp(shade, 0.93f, most); warm *= 1f - 0.6f * most; lasts *= 1f + 1.2f * most; }
                 // (and on a launch pad, the water poured under it boils away into steam: see Deluge)
-                float steam = Smoke.Deluge != null && Smoke.Deluge ? Deluge(rim, along) * running : 0f;
+                float steam = Smoke.Deluge != null && Smoke.Deluge ? Deluge(rim, along) * running * Smoke.Times(Smoke.SteamMuch) : 0f;
                 if (steam > 0.01f)
                 {
                     float rh = damp ? DampAt(rim) : -1f;
@@ -381,9 +428,9 @@ namespace RocketSmoke
                     burning++;
                     e.Seen = now;
                     if (Smoke.Hide && !e.Hid) HideTheirs(e);
-                    else if (!Smoke.Hide && e.Hid) Show(e);
+                    else if (!Smoke.Hide && e.Hid) Show(e, "hiding off");
                 }
-                else if (e.Hid && now - e.Seen > 0.5f) Show(e);
+                else if (e.Hid && now - e.Seen > 0.5f) Show(e, "not taken");
             }
             smoking = burning;
             Report = (burning > 0 ? burning + (burning == 1 ? " engine is" : " engines are") + " leaving smoke." : engines.Count > 0 ? "No engine is running where there is air to hold smoke." : "No rocket engine here.")
@@ -520,9 +567,46 @@ namespace RocketSmoke
             if (it == null) return "not running";
             var say = new System.Text.StringBuilder(Report + " " + Why);
             foreach (Engine e in it.engines)
-                say.Append("\n").Append(e.Part.partInfo != null ? e.Part.partInfo.name : e.Part.name).Append(": ").Append(e.Fuel).Append(", ").Append(e.Nozzles.Count).Append(" nozzles measured, running ")
-                   .Append(Engines.Running(e.Module).ToString("F2")).Append(", hides ").Append(e.Hidden.Count);
+            {
+                if (e.Part == null || e.Module == null) { say.Append("\n(an engine gone)"); continue; }
+                say.Append("\n").Append(e.Part.partInfo != null ? e.Part.partInfo.name : e.Part.name).Append(" [").Append(e.Part.flightID).Append("] on '")
+                   .Append(e.Part.vessel != null ? e.Part.vessel.vesselName : "no ship").Append("'").Append(e.Part.vessel != null && e.Part.vessel.packed ? " (packed)" : "")
+                   .Append(": ").Append(e.Fuel).Append(", running ").Append(Engines.Running(e.Module).ToString("F2"))
+                   .Append(", ").Append(e.Hid ? "theirs hidden (" + e.Hidden.Count + ")" : "theirs shown")
+                   .Append(", taken ").Append(e.Seen > 0f ? (Time.time - e.Seen).ToString("F1") + " s ago" : "never")
+                   .Append(e.ShownCount > 0 ? ", given back " + e.ShownCount + " times, last " + (Time.time - e.ShownAt).ToString("F1") + " s ago (" + e.ShownWhy + ")" : "")
+                   .Append("; ").Append(Theirs(e));
+            }
             return say.ToString();
+        }
+
+        static bool keepTheirs;
+        /// <summary>(For the development build: "on" gives the game's smoke back as before 2026-11-07, what it made while hidden kept
+        /// and shown at once; anything else lets that go, as now.)</summary>
+        public static string Keep(string v)
+        {
+            keepTheirs = v == "on";
+            return keepTheirs ? "the game's smoke given back with what it made while hidden (as before)" : "what the game's smoke made while hidden let go when it is given back";
+        }
+
+        /// <summary>(For the development build: the game's own smoke on an engine's part as it is drawn just now: how many of its
+        /// particle effects are on the screen with how many particles, and how many particles are alive behind the hidden ones.)</summary>
+        static string Theirs(Engine e)
+        {
+            int showing = 0, shown = 0, behind = 0;
+            foreach (ParticleSystemRenderer r in e.Part.GetComponentsInChildren<ParticleSystemRenderer>(true))
+            {
+                if (r == null) continue;
+                bool smoke = false;
+                for (Transform t = r.transform; t != null && t != e.Part.transform; t = t.parent)
+                    if (t.name.IndexOf("smoke", StringComparison.OrdinalIgnoreCase) >= 0) { smoke = true; break; }
+                if (!smoke) continue;
+                ParticleSystem system = r.GetComponent<ParticleSystem>();
+                int alive = system != null ? system.particleCount : 0;
+                if (r.forceRenderingOff) behind += alive;
+                else if (r.enabled && r.gameObject.activeInHierarchy && alive > 0) { showing++; shown += alive; }
+            }
+            return "their smoke on the screen: " + showing + " effects, " + shown + " particles; " + behind + " alive behind the hidden";
         }
 #endif
     }

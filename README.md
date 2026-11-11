@@ -30,7 +30,9 @@ Copy the `RocketSmoke` folder from the download into your KSP's `GameData`, besi
 ## Settings
 
 In the Keystone window (the keystone button on the game's toolbar, or Alt-K; Option-K on a Mac): how much, how long
-it hangs, and whether the game's own smoke is hidden.
+it hangs, and whether the game's own smoke is hidden. With Keystone 0.11.0, five finer details in its Advanced view: how
+much smoke solid boosters and liquid engines each make, how much cloud the exhaust makes in damp air, how thick jets'
+trails are, and how much steam the pad's water makes. [All of them](https://github.com/IshiakiZ/ksp-rocket-smoke/wiki/The-long-description#settings).
 
 ## Good to know
 
