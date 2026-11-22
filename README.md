@@ -17,8 +17,9 @@ For Kerbal Space Program 1.12.x. **Needs two other mods**, each a separate downl
 * **Smoke that comes out of the flame,** is carried down the jet, spreads, rises and is taken by the wind.
 * **Down the trench:** on a launch pad it comes out of the trench's two ends and rolls out over the ground.
 * **A trail that stays:** the column stands behind the rocket, a kilometre and more of it, leaning with the wind.
-* **What burns shows:** a solid booster's smoke is thick and white, kerosene's thin and grey-brown, and hydrogen
-  leaves a little steam.
+* **What burns shows:** a solid booster's smoke is thick and white. A liquid engine leaves next to nothing in dry air,
+  as a real one does (not yet released: until then kerosene's was a thin grey-brown column, hydrogen's a little steam):
+  a faint haze of soot from kerosene, and cloud only where the air is damp or cold enough to make it of the exhaust's water.
 * **The pad's water and the air's** (0.3.0): at lift-off the deluge under the rocket boils into white billows; in damp air
   the exhaust's own water stays as cloud; at dusk the trail high up stays sunlit after the ground has gone dark.
 

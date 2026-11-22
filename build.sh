@@ -34,13 +34,16 @@ if [ -f src/RocketSmoke/needs.txt ]; then
   done < src/RocketSmoke/needs.txt
 fi
 
-# A companion library for the Harmony mod, where this mod has one (src/RocketSmokeHarmony): built against this mod and against
-# Harmony, only where Harmony is installed in the game, and loaded by the game only where it is.
+# A companion library for the Harmony mod, where this mod has one (src/RocketSmokeCompanion): built against this mod and against
+# Harmony, only where Harmony is installed in the game, and loaded by the game only where it is. (It was RocketSmokeHarmony.dll
+# until 2026-11-20: CKAN takes any library with "Harmony" in its name for a copy of Harmony itself. That file, from a
+# build here before then, goes: a download must not carry it.)
 HARMONY="$KSP_DIR/GameData/000_Harmony/0Harmony.dll"
 companion() {  # companion <folder the mod's own library is in>
-  [ -d src/RocketSmokeHarmony ] || return 0
-  if [ -f "$HARMONY" ]; then WITH="$KEYSTONE:$1/RocketSmoke.dll:$HARMONY" compile "$1/RocketSmokeHarmony.dll" "" src/RocketSmokeHarmony
-  else rm -f "$1/RocketSmokeHarmony.dll"; echo "left out: RocketSmokeHarmony (Harmony is not installed here to build it against)"; fi
+  rm -f "$1/RocketSmokeHarmony.dll"
+  [ -d src/RocketSmokeCompanion ] || return 0
+  if [ -f "$HARMONY" ]; then WITH="$KEYSTONE:$1/RocketSmoke.dll:$HARMONY" compile "$1/RocketSmokeCompanion.dll" "" src/RocketSmokeCompanion
+  else rm -f "$1/RocketSmokeCompanion.dll"; echo "left out: RocketSmokeCompanion (Harmony is not installed here to build it against)"; fi
 }
 
 case "$MODE" in
@@ -60,8 +63,8 @@ case "$MODE" in
     if [ "$MODE" = dist ]; then echo "ok: built into $OUT"; exit 0; fi
     mkdir -p "$KSP_DIR/GameData/RocketSmoke"
     cp "$OUT/RocketSmoke.dll" "$KSP_DIR/GameData/RocketSmoke/"
-    rm -f "$KSP_DIR/GameData/RocketSmoke/RocketSmokeHarmony.dll"
-    [ -f "$OUT/RocketSmokeHarmony.dll" ] && cp "$OUT/RocketSmokeHarmony.dll" "$KSP_DIR/GameData/RocketSmoke/"
+    rm -f "$KSP_DIR/GameData/RocketSmoke/RocketSmokeHarmony.dll" "$KSP_DIR/GameData/RocketSmoke/RocketSmokeCompanion.dll"
+    [ -f "$OUT/RocketSmokeCompanion.dll" ] && cp "$OUT/RocketSmokeCompanion.dll" "$KSP_DIR/GameData/RocketSmoke/"
     if [ -d "$OUT/PluginData" ]; then mkdir -p "$KSP_DIR/GameData/RocketSmoke/PluginData"; cp -R "$OUT/PluginData/." "$KSP_DIR/GameData/RocketSmoke/PluginData/"; fi
     echo "ok: Rocket Smoke installed to $KSP_DIR/GameData/RocketSmoke (restart KSP to load it; it needs Keystone there too)"
     ;;

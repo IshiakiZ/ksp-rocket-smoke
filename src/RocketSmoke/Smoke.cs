@@ -30,7 +30,7 @@ namespace RocketSmoke
     /// </summary>
     static class Smoke
     {
-        public const string Version = "0.4.0";
+        public const string Version = "0.5.0";
 
         public static Mod Page;
         public static Toggle On, Hide, Trails, Deluge;
@@ -76,21 +76,44 @@ namespace RocketSmoke
         public static void Log(string text) => Kit.Log("Rocket Smoke", text);
 
         /// <summary>The smoke each fuel makes: how much (1 is a solid booster's), how light, how brown, and for how many seconds it hangs in thick still air.</summary>
+        /// <remarks>
+        /// (Since 2026-11-16 a liquid engine's is next to nothing in dry air: a fifth of what it was for kerosene, less for the
+        /// rest. Set beside NASA's photographs of a Falcon 9 climbing by daylight (KSC-20200530-PH-AWG04_0008 and its fellows),
+        /// which leaves a flame behind it and no smoke at all from pad to rocket, the grey column this mod drew behind every
+        /// liquid-fuelled rocket was a solid booster's in the wrong colour. A kerosene engine's exhaust is carbon dioxide and
+        /// water with a little soot, a hydrogen engine's water alone: seen where the air is damp or cold enough to make cloud
+        /// of the water (see Wetted and Frozen, which go by `Water`, as much as before), and on the pad as steam.)
+        /// </remarks>
         public static void Of(Fuel fuel, out float amount, out float shade, out float warm, out float lasts, out int tint)
         {
             switch (fuel)
             {
                 // Solid propellant: thick, white with a little grey in it, and it stays.
                 case Fuel.Solid: amount = 1f; shade = 0.82f; warm = 0.06f; lasts = 16f; tint = 1; break;
-                // Kerosene: thin, grey-brown with soot.
-                case Fuel.Kerosene: amount = 0.24f; shade = 0.42f; warm = 0.3f; lasts = 9f; tint = 0; break;
-                // Hydrogen: water, and nothing else: a little white steam that is soon gone.
-                case Fuel.Hydrogen: amount = 0.13f; shade = 0.85f; warm = 0f; lasts = 5f; tint = 4; break;
-                case Fuel.Methane: amount = 0.12f; shade = 0.6f; warm = 0.1f; lasts = 5f; tint = 4; break;
+                // Kerosene: a faint grey-brown haze of soot.
+                case Fuel.Kerosene: amount = 0.05f; shade = 0.42f; warm = 0.3f; lasts = 9f; tint = 0; break;
+                // Hydrogen: water, and nothing else: nothing to see in dry air.
+                case Fuel.Hydrogen: amount = 0.01f; shade = 0.85f; warm = 0f; lasts = 5f; tint = 4; break;
+                case Fuel.Methane: amount = 0.02f; shade = 0.6f; warm = 0.1f; lasts = 5f; tint = 4; break;
                 // Fuels that keep: a thin haze with brown in it.
-                case Fuel.Storable: amount = 0.14f; shade = 0.38f; warm = 0.6f; lasts = 6f; tint = 2; break;
-                case Fuel.Mono: amount = 0.06f; shade = 0.8f; warm = 0f; lasts = 3f; tint = 2; break;
+                case Fuel.Storable: amount = 0.05f; shade = 0.38f; warm = 0.6f; lasts = 6f; tint = 2; break;
+                case Fuel.Mono: amount = 0.02f; shade = 0.8f; warm = 0f; lasts = 3f; tint = 2; break;
                 default: amount = 0f; shade = 0.5f; warm = 0f; lasts = 0f; tint = 0; break;
+            }
+        }
+
+        /// <summary>How much cloud the water in a fuel's exhaust can make, where the air turns it to cloud or ice (1 is a solid booster's smoke): what each fuel's smoke was until 2026-11-16.</summary>
+        public static float Water(Fuel fuel)
+        {
+            switch (fuel)
+            {
+                case Fuel.Solid: return 1f;
+                case Fuel.Kerosene: return 0.24f;
+                case Fuel.Hydrogen: return 0.13f;
+                case Fuel.Methane: return 0.12f;
+                case Fuel.Storable: return 0.14f;
+                case Fuel.Mono: return 0.06f;
+                default: return 0f;
             }
         }
     }
@@ -396,14 +419,15 @@ namespace RocketSmoke
                     continue;
                 }
                 Smoke.Of(e.Fuel, out float amount, out float shade, out float warm, out float lasts, out int tint);
-                amount *= Smoke.Times(e.Fuel == Fuel.Solid ? Smoke.SolidMuch : Smoke.LiquidMuch);
+                float liquidMuch = Smoke.Times(e.Fuel == Fuel.Solid ? Smoke.SolidMuch : Smoke.LiquidMuch), water = Smoke.Water(e.Fuel) * liquidMuch;
+                amount *= liquidMuch;
                 // (and high up, in air cold enough, the water in it freezes: the trail turns white ice, thicker to see and slower to go)
                 float ice = Frozen(v, rim, e.Fuel);
-                if (ice > 0f) { amount *= 1f + 2.5f * ice; shade = Mathf.Lerp(shade, 0.96f, ice); warm *= 1f - ice; lasts *= 1f + ice; }
+                if (ice > 0f) { amount += (water * (1f + 2.5f * ice) - amount) * ice; shade = Mathf.Lerp(shade, 0.96f, ice); warm *= 1f - ice; lasts *= 1f + ice; }
                 // (and in damp air the water in the exhaust stays as cloud: see Wetted. More of it than the air gives, as the page may
                 // ask, is more cloud, as white as the most the air gives)
                 float wet = Wetted(rim, e.Fuel) * (1f - ice) * Smoke.Times(Smoke.DampMuch), most = Mathf.Min(wet, 1f);
-                if (wet > 0.01f) { amount *= 1f + 1.6f * wet; shade = Mathf.Lerp(shade, 0.93f, most); warm *= 1f - 0.6f * most; lasts *= 1f + 1.2f * most; }
+                if (wet > 0.01f) { amount += (water * (1f + 1.6f * wet) * (1f + 2.5f * ice) - amount) * most; shade = Mathf.Lerp(shade, 0.93f, most); warm *= 1f - 0.6f * most; lasts *= 1f + 1.2f * most; }
                 // (and on a launch pad, the water poured under it boils away into steam: see Deluge)
                 float steam = Smoke.Deluge != null && Smoke.Deluge ? Deluge(rim, along) * running * Smoke.Times(Smoke.SteamMuch) : 0f;
                 if (steam > 0.01f)
@@ -414,7 +438,9 @@ namespace RocketSmoke
                     shade = Mathf.Lerp(shade, 0.95f, added / (amount + added));
                     warm *= amount / (amount + added);
                     // (steam lingers as a cloud in damp air and is gone in seconds in dry: what is seen is the water it condenses to)
-                    lasts = Mathf.Lerp(lasts, Mathf.Lerp(7f, 22f, Mathf.Clamp01((rh - 0.4f) / 0.55f)), added / (amount + added));
+                    // (16 to 36 s since 2026-11-16, 7 to 22 until then: a real launch's cloud is at its largest a quarter of a minute
+                    // after lift-off and stands for a minute and more (NASA's KSC-07pp2291, KSC-02pp0483); ours was a haze by thirteen seconds.)
+                    lasts = Mathf.Lerp(lasts, Mathf.Lerp(16f, 36f, Mathf.Clamp01((rh - 0.4f) / 0.55f)), added / (amount + added));
                     amount += added;
                     deluged++;
                 }
